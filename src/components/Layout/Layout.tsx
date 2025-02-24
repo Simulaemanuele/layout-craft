@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "@/components/Layout/Layout.css";
 
 type LayoutProps = {
@@ -26,8 +26,16 @@ const Layout: React.FC<LayoutProps> = ({
   headerContent,
   style,
 }) => {
-  let width = window.innerWidth;
-  console.log("Width at mount: ", width);
+  const [width, setWidth] = useState<number>(0);
+
+  useEffect(() => {
+    setWidth(window.innerWidth);
+
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const recomputedWidthSize = (mode: string): number => {
     let result = 0;
@@ -38,7 +46,6 @@ const Layout: React.FC<LayoutProps> = ({
       case "sidebar":
         result = width * (1 / 3);
     }
-    console.log("Inner method: ", result);
     return result;
   };
 
